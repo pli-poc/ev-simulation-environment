@@ -21,11 +21,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Extract application source
+      - name: Reconstruct and extract application source
         run: |
+          cat source/chunk_*.b64 | tr -d '\n\r' | base64 -d > source-bundle.zip
           rm -rf site
           mkdir site
-          unzip -q source.zip -d site
+          unzip -q source-bundle.zip -d site
 
       - name: Setup Node
         uses: actions/setup-node@v4
