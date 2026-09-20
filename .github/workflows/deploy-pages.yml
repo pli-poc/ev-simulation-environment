@@ -27,6 +27,14 @@ jobs:
           rm -rf site
           mkdir site
           unzip -q source-bundle.zip -d site
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p = Path("site/tsconfig.json")
+          d = json.loads(p.read_text())
+          d["compilerOptions"]["types"] = ["node"]
+          p.write_text(json.dumps(d, indent=2) + "\n")
+          PY
 
       - name: Setup Node
         uses: actions/setup-node@v4
