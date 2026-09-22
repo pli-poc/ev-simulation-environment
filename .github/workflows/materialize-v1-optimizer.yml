@@ -1,0 +1,25 @@
+name: Materialize V1 optimizer source
+on:
+  push:
+    branches: ["feature/v1-smart-charging-optimizer"]
+permissions:
+  contents: write
+jobs:
+  materialize:
+    if: ${{ !contains(github.event.head_commit.message, 'materialize V1 source') }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feature/v1-smart-charging-optimizer
+      - name: Reconstruct and commit V1 source
+        run: |
+          rm -rf working-source
+          cat source/chunk_*.b64 | tr -d '\n\r' | base64 -d > /tmp/source.zip
+          mkdir working-source
+          unzip -q /tmp/source.zip -d working-source
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add working-source
+          git commit -m "chore: materialize V1 source for optimizer development"
+          git push origin HEAD:feature/v1-smart-charging-optimizer
