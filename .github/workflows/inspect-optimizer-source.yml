@@ -1,21 +1,25 @@
-name: Inspect source for optimizer work
+name: Materialize optimizer source
 on:
   push:
     branches: ["feature/smart-charging-optimizer"]
 permissions:
-  contents: read
+  contents: write
 jobs:
-  inspect:
+  materialize:
+    if: ${{ !contains(github.event.head_commit.message, 'materialize application source') }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Reconstruct source
+        with:
+          ref: feature/smart-charging-optimizer
+      - name: Reconstruct and commit source
         run: |
+          rm -rf working-source
           cat source/chunk_*.b64 | tr -d '\n\r' | base64 -d > /tmp/source.zip
-          mkdir /tmp/site && unzip -q /tmp/source.zip -d /tmp/site
-      - name: Show relevant source
-        run: |
-          for f in /tmp/site/lib/twin/engine.ts /tmp/site/lib/twin/flex-engine.ts /tmp/site/components/twin/TwinApp.tsx /tmp/site/components/twin/EnergyHubApp.tsx; do
-            echo "===== $f ====="
-            cat "$f"
-          done
+          mkdir working-source
+          unzip -q /tmp/source.zip -d working-source
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add working-source
+          git commit -m "chore: materialize application source for optimizer development"
+          git push origin HEAD:feature/smart-charging-optimizer
