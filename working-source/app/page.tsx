@@ -1,3 +1,3 @@
 "use client";
-import EnergyHubApp from '@/components/twin/EnergyHubApp';
-export default function Home(){return <EnergyHubApp/>;}
+import OptimizerApp from '@/components/twin/OptimizerApp';
+export default function Home(){return <OptimizerApp/>;}
