@@ -1,0 +1,21 @@
+name: Inspect source for optimizer work
+on:
+  push:
+    branches: ["feature/smart-charging-optimizer"]
+permissions:
+  contents: read
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Reconstruct source
+        run: |
+          cat source/chunk_*.b64 | tr -d '\n\r' | base64 -d > /tmp/source.zip
+          mkdir /tmp/site && unzip -q /tmp/source.zip -d /tmp/site
+      - name: Show relevant source
+        run: |
+          for f in /tmp/site/lib/twin/engine.ts /tmp/site/lib/twin/flex-engine.ts /tmp/site/components/twin/TwinApp.tsx /tmp/site/components/twin/EnergyHubApp.tsx; do
+            echo "===== $f ====="
+            cat "$f"
+          done
