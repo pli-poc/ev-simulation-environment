@@ -20,3 +20,4 @@ jobs:
         env:
           NEXT_PUBLIC_BASE_PATH: /ev-simulation-environment
         run: npm run build:pages
+
