@@ -1,0 +1,22 @@
+name: Validate V1 optimizer
+on:
+  push:
+    branches: ["feature/v1-smart-charging-optimizer"]
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install
+        working-directory: working-source
+        run: npm install --no-audit --no-fund
+      - name: Build
+        working-directory: working-source
+        env:
+          NEXT_PUBLIC_BASE_PATH: /ev-simulation-environment
+        run: npm run build:pages
